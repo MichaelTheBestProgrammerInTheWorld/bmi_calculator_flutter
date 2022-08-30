@@ -4,14 +4,12 @@ import 'package:bmi_calculator_flutter/reusable_card.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import 'constants.dart';
 import 'icon_content.dart';
 
-const bottomContainerHeight = 80.0;
-const bottomContainerColor = Color(0xFFEB1555);
-const activeCardColor = Color(0xFF1D1E33);
-const inactiveCardColor = Color(0xFF111328);
-
 enum Gender { MALE, FEMALE }
+
+enum Weight { PLUS, MINUS }
 
 class InputPage extends StatefulWidget {
   @override
@@ -20,6 +18,9 @@ class InputPage extends StatefulWidget {
 
 class _InputPageState extends State<InputPage> {
   Gender selectedgender = Gender.MALE;
+  int height = 180;
+  int weight = 60;
+  int age = 25;
 
   @override
   Widget build(BuildContext context) {
@@ -28,6 +29,7 @@ class _InputPageState extends State<InputPage> {
           title: Text('BMI CALCULATOR'),
         ),
         body: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Expanded(
                 child: Row(
@@ -41,8 +43,8 @@ class _InputPageState extends State<InputPage> {
                   },
                   child: ReusableCard(
                       selectedgender == Gender.MALE
-                          ? activeCardColor
-                          : inactiveCardColor,
+                          ? kActiveCardColor
+                          : kInactiveCardColor,
                       IconContent(FontAwesomeIcons.mars, 'MALE')),
                 )),
                 Expanded(
@@ -54,27 +56,183 @@ class _InputPageState extends State<InputPage> {
                   },
                   child: ReusableCard(
                       selectedgender == Gender.FEMALE
-                          ? activeCardColor
-                          : inactiveCardColor,
+                          ? kActiveCardColor
+                          : kInactiveCardColor,
                       IconContent(FontAwesomeIcons.venus, 'FEMALE')),
                 )),
               ],
             )),
-            Expanded(child: ReusableCard(activeCardColor, Container())),
+            Expanded(
+                child: ReusableCard(
+                    kActiveCardColor,
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'HEIGHT',
+                          style: kLabelTextStyle,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.baseline,
+                          textBaseline: TextBaseline.alphabetic,
+                          children: [
+                            Text(
+                              height.toString(),
+                              style: kNumberTextStyle,
+                            ),
+                            Text(
+                              'cm',
+                              style: kLabelTextStyle,
+                            )
+                          ],
+                        ),
+                        SliderTheme(
+                          data: SliderTheme.of(context).copyWith(
+                              activeTrackColor: Colors.white,
+                              thumbColor: kBottomContainerColor,
+                              overlayColor: Color(0x29EB1555),
+                              thumbShape: RoundSliderThumbShape(
+                                  enabledThumbRadius: 15.0),
+                              overlayShape:
+                                  RoundSliderOverlayShape(overlayRadius: 30.0)),
+                          child: Slider(
+                              value: height.toDouble(),
+                              min: 100.0,
+                              max: 220.0,
+                              inactiveColor: Color(0xFF8D8E98),
+                              onChanged: (double newValue) {
+                                setState(() {
+                                  height = newValue.round();
+                                });
+                              }),
+                        )
+                      ],
+                    ))),
             Expanded(
                 child: Row(
               children: [
-                Expanded(child: ReusableCard(activeCardColor, Container())),
-                Expanded(child: ReusableCard(activeCardColor, Container())),
+                Expanded(
+                    child: ReusableCard(
+                        kActiveCardColor,
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              'WEIGHT',
+                              style: kLabelTextStyle,
+                            ),
+                            Text(
+                              weight.toString(),
+                              style: kNumberTextStyle,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    print(
+                                        'the button is clicked and onPressed is triggered');
+                                    setState(() {
+                                      weight--;
+                                    });
+                                  },
+                                  child: RoundIconButton(
+                                      FontAwesomeIcons.minus, () {}),
+                                ),
+                                SizedBox(
+                                  width: 10.0,
+                                ),
+                                GestureDetector(
+                                    onTap: () {
+                                      print(
+                                          'the button is clicked and onPressed is triggered');
+                                      setState(() {
+                                        weight++;
+                                      });
+                                    },
+                                    child: RoundIconButton(
+                                        FontAwesomeIcons.plus, () {}))
+                              ],
+                            )
+                          ],
+                        ))),
+                Expanded(
+                    child: ReusableCard(
+                        kActiveCardColor,
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              'AGE',
+                              style: kLabelTextStyle,
+                            ),
+                            Text(
+                              age.toString(),
+                              style: kNumberTextStyle,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    print(
+                                        'the button is clicked and onPressed is triggered');
+                                    setState(() {
+                                      age--;
+                                    });
+                                  },
+                                  child: RoundIconButton(
+                                      FontAwesomeIcons.minus, () {}),
+                                ),
+                                SizedBox(
+                                  width: 10.0,
+                                ),
+                                GestureDetector(
+                                    onTap: () {
+                                      print(
+                                          'the button is clicked and onPressed is triggered');
+                                      setState(() {
+                                        age++;
+                                      });
+                                    },
+                                    child: RoundIconButton(
+                                        FontAwesomeIcons.plus, () {}))
+                              ],
+                            )
+                          ],
+                        ))),
               ],
             )),
             Container(
-              color: bottomContainerColor,
+              color: kBottomContainerColor,
               margin: EdgeInsets.only(top: 10.0),
               width: double.infinity,
-              height: bottomContainerHeight,
+              height: kBottomContainerHeight,
             )
           ],
         ));
+  }
+}
+
+class RoundIconButton extends StatelessWidget {
+  const RoundIconButton(this.icon, this.onPress);
+
+  final IconData icon;
+  final Function onPress;
+
+  @override
+  Widget build(BuildContext context) {
+    return RawMaterialButton(
+      onPressed: onPress(),
+      child: Icon(icon),
+      shape: CircleBorder(),
+      fillColor: Color(0xFF4C4F5E),
+      elevation: 8.0,
+      constraints: BoxConstraints.tightFor(
+        width: 56.0,
+        height: 56.0,
+      ),
+    );
   }
 }
